@@ -1,0 +1,60 @@
+solution optimized :
+
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+
+        int n= coins.length;
+        int[] prev = new int[amount+1];
+        int max = amount+1;
+
+        // intialize prev to max amount
+        for(int i=0;i<=amount;i++){
+            prev[i]=max;
+        }
+        // 0 coins needed to make amount 0;
+        prev[0]=0;
+
+        for(int i=0;i<n;i++){
+            for(int target=coins[i];target<=amount;target++){
+                // either take the current coin or dont take the current coin 
+                prev[target]=Math.min(prev[target],prev[target-coins[i]]+1);
+            }
+        }
+
+        return prev[amount] > amount ? -1:prev[amount];
+
+    }
+}
+
+solution tabulation :
+
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int n = coins.length;
+        int[][] dp = new int[n][amount + 1];
+
+        // Initialize
+        for (int i = 0; i <= amount; i++) {
+            if (i % coins[0] == 0) {
+                dp[0][i] = i / coins[0]; // minimum coins for first coin
+            } else {
+                dp[0][i] = (int)1e9; // very big number (means not possible)
+            }
+        }
+
+        for (int i = 1; i < n; i++) {
+            for (int target = 0; target <= amount; target++) {
+                int notTaken = dp[i-1][target];
+                int taken = (int)1e9;
+                if (coins[i] <= target) {
+                    taken = 1 + dp[i][target - coins[i]];
+                }
+                dp[i][target] = Math.min(notTaken, taken);
+            }
+        }
+
+        int ans = dp[n-1][amount];
+        if(ans >= (int)1e9) return -1; // if not possible to form amount
+        return ans;
+    }
+}
