@@ -1,0 +1,36 @@
+class Solution {
+    public int getMax(int[] nums,int ind,int[]dp){
+        if(ind==0) return nums[0];
+        if(ind<0) return 0;
+        if(dp[ind]!=-1) return dp[ind];
+
+        int pick = nums[ind]+getMax(nums,ind-2,dp);
+        int notpick = getMax(nums,ind-1,dp);
+
+        return dp[ind]=Math.max(pick,notpick);
+
+    }
+
+    public int robLinear(int[] nums){
+        int n = nums.length;
+        int dp[] = new int[n];
+        Arrays.fill(dp,-1);
+        return getMax(nums,n-1,dp);
+
+    }
+
+    public int rob(int[] nums) {
+
+        int n = nums.length;
+        if(n==1) return nums[0];
+
+        int[] case1 = Arrays.copyOfRange(nums, 0, n - 1);
+        int max1 = robLinear(case1);
+
+        int[] case2 = Arrays.copyOfRange(nums, 1, n);
+        int max2 = robLinear(case2);
+
+        return Math.max(max1,max2);
+        
+    }
+}
